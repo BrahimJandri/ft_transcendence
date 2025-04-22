@@ -13,7 +13,7 @@ h1 {
 }
 
 .highlight {
-    color: rgb(15,41,154);
+    color: rgb(15, 41, 154);
 }
 
 img {
@@ -23,7 +23,7 @@ img {
 }
 
 .login-box {
-    background-color: rgb(4,28,132);
+    background-color: rgb(4, 28, 132);
     padding: 20px 30px;
     border-radius: 15px;
     display: flex;
@@ -32,23 +32,27 @@ img {
     color: white;
     width: fit-content;
     font-family: 'Roboto', sans-serif;
-  }
+}
 
-  .form-row {
+.form-row {
     display: flex;
     align-items: center;
     gap: 15px;
-  }
+}
 
-  .form-row label {
+.form-row label {
     width: 70px;
     text-align: right;
     font-weight: bold;
-  }
+}
 
-  .form-row input {
+.form-row input {
     padding: 8px 12px;
     border: none;
     border-radius: 15px;
     width: 150px;
-  }
+}
+
+html {
+    scroll-behavior: smooth;
+}
