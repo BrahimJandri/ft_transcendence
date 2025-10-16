@@ -6,6 +6,9 @@
 const sections = document.querySelectorAll<HTMLElement>('.page-section');
 const navLinks = document.querySelectorAll<HTMLButtonElement>('.nav-link');
 
+// Get navbar and all sections
+const navbar = document.getElementById("navbar");
+
 // ✅ Define that pageId is always a string
 function showPage(pageId: string): void {
   // Hide all sections except the one we want
@@ -18,7 +21,17 @@ function showPage(pageId: string): void {
     const isActive = link.dataset.page === pageId;
     link.classList.toggle('text-sky-400', isActive);
   });
+
+  // Hide navbar on dashboard, show otherwise
+  if (navbar) {
+    if (pageId === 'dashboard') {
+      navbar.classList.add('hidden');
+    } else {
+      navbar.classList.remove('hidden');
+    }
+  }
 }
+
 
 // Attach click events to each navbar button
 navLinks.forEach((link) => {
@@ -129,7 +142,7 @@ loginForm?.addEventListener("submit", async (e: SubmitEvent) => {
 
       const userGreeting = document.getElementById("userGreeting");
       if (userGreeting && data.user.username) {
-        userGreeting.textContent = `Hello, ${data.user.username}! 👋`;
+        userGreeting.textContent = `Welcome to your Dashboard, ${data.user.username}! 👋`;
       }
 
       showPage("dashboard");
@@ -190,3 +203,4 @@ if (savedUser) {
   }
   showPage("dashboard");
 }
+
