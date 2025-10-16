@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HyperPong</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Palanquin+Dark:wght@400;600;700&family=Luckiest+Guy&display=swap"
+    rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Palanquin Dark', sans-serif;
+    }
+
+    .font-palanquin {
+      font-family: 'Palanquin Dark', sans-serif;
+    }
+
+    .font-luckiest {
+      font-family: 'Luckiest Guy', cursive;
+    }
+
+    .font-lucida {
+      font-family: 'Lucida Sans', sans-serif;
+    }
+
+    .page-section {
+      transition: opacity 0.4s ease;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-b from-[#110934] to-[#382073] text-white">
+  <!-- Navbar -->
+  <nav class="relative flex items-center justify-between px-10 py-6 font-palanquin">
+    <!-- Logo -->
+    <div class="text-3xl font-extrabold flex">
+      <a href="#home"><span class="text-white">Hyper</span><span class="text-red-500">P</span><span
+          class="text-sky-400">ong</span><span class="text-white">.</span></a>
+    </div>
+
+    <!-- Center Menu -->
+    <div class="absolute left-1/2 transform -translate-x-1/2 flex space-x-10 text-xl">
+      <button data-page="home" class="nav-link text-white font-semibold hover:text-sky-400">Home</button>
+      <button data-page="team" class="nav-link text-white font-semibold hover:text-sky-400">Team</button>
+      <button data-page="about" class="nav-link text-white font-semibold hover:text-sky-400">About</button>
+    </div>
+
+    <!-- Right Menu -->
+    <div class="flex items-center space-x-6 text-xl">
+      <button data-page="login" id="homeLongInBtn" class="nav-link text-white font-bold hover:text-sky-400">Log
+        in</button>
+      <button data-page="signup" id="homeSignUpBtn"
+        class="nav-link bg-sky-400 text-white font-semibold px-5 py-2 rounded-full hover:bg-red-500">
+        Sign in
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="relative">
+    <!-- HOME -->
+    <section id="home" class="page-section grid grid-cols-1 md:grid-cols-2 justify-items-center items-center h-screen">
+      <div class="p-10 text-center">
+        <h1 class="text-6xl font-extrabold leading-tight font-luckiest">
+          <span class="text-white">SERVE.</span>
+          <span class="text-sky-400">SMASH.</span><br />
+          <span class="text-white">MASTER YOUR </span><span class="text-red-500">GAME</span>
+        </h1>
+        <p class="mt-6 text-2xl text-gray-300 font-lucida">
+          "Unleash your potential in table tennis with expert guides, community challenges,
+          and a structured path to greatness. Combine precision and passion to elevate your play."
+        </p>
+        <div class="mt-10">
+          <button data-page="login"
+            class="nav-link bg-sky-400 text-white text-xl font-semibold px-8 py-4 rounded-full hover:bg-red-500">
+            Start Now!
+          </button>
+        </div>
+      </div>
+      <div class="flex justify-center">
+        <img src="./images/Boy.png" alt="Ping Pong Kid" class="w-[700px]" />
+      </div>
+    </section>
+
+    <!-- LOGIN/SIGNUP -->
+    <section id="auth" class="page-section hidden px-8 py-10 md:flex md:flex-row justify-center items-center">
+      <div class="hidden md:flex md:w-1/2 justify-center">
+        <img src="./images/table.png" alt="Table Tennis" class="max-w-full h-auto">
+      </div>
+
+      <div class="md:w-1/2 max-w-lg">
+        <!-- Tabs -->
+        <div class="flex bg-gray-800 rounded-lg p-1 mb-6">
+          <button id="loginTab" class="flex-1 py-2 px-4 text-white font-semibold rounded-lg bg-blue-600">Log in</button>
+          <button id="signupTab"
+            class="flex-1 py-2 px-4 text-gray-400 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition">Sign
+            up</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label for="loginEmail" class="block text-gray-400 text-sm font-semibold mb-2">Email Address</label>
+            <input id="loginEmail" type="email"
+              class="w-full p-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500"
+              placeholder="PingPong@1337.ma">
+          </div>
+          <div>
+            <label for="loginPassword" class="block text-gray-400 text-sm font-semibold mb-2">Password</label>
+            <input id="loginPassword" type="password"
+              class="w-full p-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500"
+              placeholder="**********">
+          </div>
+          <div class="flex items-center justify-between">
+            <label class="flex items-center text-sm text-gray-400">
+              <input type="checkbox" class="mr-2 rounded border-gray-700 bg-gray-800 text-blue-600">
+              Remember me
+            </label>
+            <a href="#" class="text-blue-500 hover:underline text-sm">Forgot Password?</a>
+          </div>
+          <button class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition">Sign
+            in</button>
+          <p class="text-center text-gray-400 text-sm">
+            Don’t have an account?
+            <a href="#" id="switchToSignup" class="text-blue-500 hover:underline">Sign up</a>
+          </p>
+
+        </form>
+
+        <!-- SIGNUP FORM -->
+        <form id="signupForm" class="space-y-4 hidden">
+          <div>
+            <label for="signupUsername" class="block text-gray-400 text-sm font-semibold mb-2">Username</label>
+            <input id="signupUsername" type="text"
+              class="w-full p-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500"
+              placeholder="PingPong">
+          </div>
+          <div>
+            <label for="signupEmail" class="block text-gray-400 text-sm font-semibold mb-2">Email Address</label>
+            <input id="signupEmail" type="email"
+              class="w-full p-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500"
+              placeholder="PingPong@1337.ma">
+          </div>
+          <div>
+            <label for="signupPassword" class="block text-gray-400 text-sm font-semibold mb-2">Password</label>
+            <input id="signupPassword" type="password"
+              class="w-full p-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500"
+              placeholder="**********">
+          </div>
+          <button class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition">Sign
+            up</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="team" class="page-section hidden h-screen flex justify-center items-center">
+      <h1 class="text-5xl font-luckiest text-sky-400">🏓 Meet the HyperPong Team</h1>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="page-section hidden h-screen flex justify-center items-center">
+      <h1 class="text-5xl font-luckiest text-red-400">💡 About HyperPong</h1>
+    </section>
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="page-section hidden h-screen flex flex-col items-center justify-center">
+      <h1 class="text-5xl font-luckiest text-green-400 mb-6">🎉 Welcome to your Dashboard!</h1>
+      <p id="userGreeting" class="text-xl text-gray-300 font-lucida">Hello, player!</p>
+
+      <button id="logoutBtn"
+        class="mt-10 bg-red-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-600 transition">
+        Log out
+      </button>
+    </section>
+
+  </main>
+
+  <script src="./dist/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    /* 🌐 Output & File Layout */
+    "rootDir": "./src",               // where your .ts files are
+    "outDir": "./dist",               // compiled .js files go here
+
+    /* ⚙️ Environment Settings */
+    "target": "ES2017",               // support async/await & Promises
+    "module": "ESNext",               // keep modern import/export syntax
+    "lib": ["DOM", "ES2017"],         // include browser & modern JS APIs
+    "moduleResolution": "node",       // standard module lookup
+    "allowJs": false,                 // only compile .ts files
+    "isolatedModules": true,
+
+    /* 🧩 Type Checking */
+    "strict": true,                   // enable all strict checks
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "skipLibCheck": true,             // skip type checking libraries
+
+    /* 🧭 Output Options */
+    "sourceMap": true,                // generate .map files (debugging)
+    "declaration": false,             // don't emit .d.ts (you don’t need this for frontend)
+    "declarationMap": false,
+
+    /* ✨ Code Style & Safety */
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "forceConsistentCasingInFileNames": true
+  },
+
+  /* 📦 Include & Exclude */
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
