@@ -2,6 +2,15 @@
 // ------------------------------
 // 1️⃣ Page navigation (SPA)
 // ------------------------------
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 // Tell TypeScript what kind of elements we expect
 const sections = document.querySelectorAll('.page-section');
 const navLinks = document.querySelectorAll('.nav-link');
@@ -101,17 +110,17 @@ switchToLogInFromHome === null || switchToLogInFromHome === void 0 ? void 0 : sw
 // ------------------------------
 // 3️⃣ Login / Signup Handlers
 // ------------------------------
-loginForm === null || loginForm === void 0 ? void 0 : loginForm.addEventListener("submit", async (e) => {
+loginForm === null || loginForm === void 0 ? void 0 : loginForm.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, function* () {
     e.preventDefault();
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
     try {
-        const res = await fetch("http://localhost:4000/api/login", {
+        const res = yield fetch("http://localhost:4000/api/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
         });
-        const data = await res.json();
+        const data = yield res.json();
         if (res.ok) {
             localStorage.setItem("user", JSON.stringify(data.user));
             const userGreeting = document.getElementById("userGreeting");
@@ -128,19 +137,19 @@ loginForm === null || loginForm === void 0 ? void 0 : loginForm.addEventListener
     catch (err) {
         alert("Error connecting to server.");
     }
-});
-signupForm === null || signupForm === void 0 ? void 0 : signupForm.addEventListener("submit", async (e) => {
+}));
+signupForm === null || signupForm === void 0 ? void 0 : signupForm.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, function* () {
     e.preventDefault();
     const username = document.getElementById("signupUsername").value;
     const email = document.getElementById("signupEmail").value;
     const password = document.getElementById("signupPassword").value;
     try {
-        const res = await fetch("http://localhost:4000/api/signup", {
+        const res = yield fetch("http://localhost:4000/api/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, email, password }),
         });
-        const data = await res.json();
+        const data = yield res.json();
         if (res.ok) {
             alert("Signup successful! Please log in.");
             showLoginForm();
@@ -152,7 +161,7 @@ signupForm === null || signupForm === void 0 ? void 0 : signupForm.addEventListe
     catch (err) {
         alert("Error connecting to server.");
     }
-});
+}));
 // ------------------------------
 // 4️⃣ Logout + Session Persistence
 // ------------------------------
@@ -172,4 +181,3 @@ if (savedUser) {
     }
     showPage("dashboard");
 }
-//# sourceMappingURL=app.js.map

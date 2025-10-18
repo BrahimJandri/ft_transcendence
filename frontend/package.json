@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "build": "tsc && npx tailwindcss -i ./styles.css -o ./dist/styles.css",
+    "start": "npm run build && lite-server"
+  }
+}
