@@ -1,183 +1,137 @@
-"use strict";
-// ------------------------------
-// 1️⃣ Page navigation (SPA)
-// ------------------------------
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-// Tell TypeScript what kind of elements we expect
-const sections = document.querySelectorAll('.page-section');
-const navLinks = document.querySelectorAll('.nav-link');
-// Get navbar and all sections
-const navbar = document.getElementById("navbar");
-// ✅ Define that pageId is always a string
-function showPage(pageId) {
-    // Hide all sections except the one we want
-    sections.forEach((section) => {
-        section.classList.toggle('hidden', section.id !== pageId);
-    });
-    // Highlight the active link in the navbar
-    navLinks.forEach((link) => {
-        const isActive = link.dataset.page === pageId;
-        link.classList.toggle('text-sky-400', isActive);
-    });
-    // Hide navbar on dashboard, show otherwise
-    if (navbar) {
-        if (pageId === 'dashboard') {
-            navbar.classList.add('hidden');
-        }
-        else {
-            navbar.classList.remove('hidden');
-        }
+/**
+ * Main Application Entry Point
+ * Initializes router, registers routes, and manages page logic
+ */
+import { Router } from './router.js';
+import { Theme } from './utils/theme.js';
+import { AuthService } from './services/authService.js';
+// Import page components
+import { HomePage } from './pages/home.js';
+import { LoginPage } from './pages/login.js';
+import { SignPage } from './pages/sign.js';
+import { DashboardPage } from './pages/dashboard.js';
+import { ProfilePage } from './pages/profile.js';
+import { SettingsPage } from './pages/settings.js';
+import { GamePage } from './pages/game.js';
+import { PlayPage } from './pages/play.js';
+import { GameSetupPage } from './pages/gameSetup.js';
+import { FriendsPage } from './pages/friends.js';
+import { ChatPage } from './pages/chat.js';
+import { StatsPage } from './pages/stats.js';
+import { TournamentsPage } from './pages/tournaments.js';
+import { FindMatchPage } from './pages/findMatch.js';
+// Import logic handlers
+import { initHomePage } from './logic/homeLogic.js';
+import { initLoginPage } from './logic/loginLogic.js';
+import { initSignPage } from './logic/signLogic.js';
+import { initDashboardPage } from './logic/dashboardLogic.js';
+import { initGamePage } from './logic/gameLogic.js';
+// Initialize the application
+function initApp() {
+    // Initialize theme
+    Theme.init();
+    // Get the root element
+    const app = document.getElementById('app');
+    if (!app) {
+        console.error('Root element #app not found');
+        return;
     }
-}
-// Attach click events to each navbar button
-navLinks.forEach((link) => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const pageId = link.dataset.page;
-        if (!pageId)
+    // Create router instance
+    const router = new Router('app');
+    // Register public routes
+    router.addRoute('/', HomePage);
+    router.addRoute('/login', LoginPage);
+    router.addRoute('/sign', SignPage);
+    // Register protected routes
+    router.addRoute('/dashboard', DashboardPage, true);
+    router.addRoute('/profile', ProfilePage, true);
+    router.addRoute('/settings', SettingsPage, true);
+    router.addRoute('/game', GamePage, true);
+    router.addRoute('/play', PlayPage, true);
+    router.addRoute('/gameSetup', GameSetupPage, true);
+    router.addRoute('/friends', FriendsPage, true);
+    router.addRoute('/chat', ChatPage, true);
+    router.addRoute('/stats', StatsPage, true);
+    router.addRoute('/tournaments', TournamentsPage, true);
+    router.addRoute('/findMatch', FindMatchPage, true);
+    // Listen for route changes and initialize page-specific logic
+    window.addEventListener('routeChanged', ((e) => {
+        const { path, requiresAuth } = e.detail;
+        // Check authentication for protected routes
+        if (requiresAuth && !AuthService.isAuthenticated()) {
+            router.navigate('/login');
             return;
-        const targetPage = pageId === 'login' || pageId === 'signup' ? 'auth' : pageId;
-        showPage(targetPage);
-        history.pushState({ page: pageId }, '', `#${pageId}`);
-    });
-});
-// Handle browser back/forward navigation
-window.addEventListener('popstate', (e) => {
-    var _a;
-    const page = ((_a = e.state) === null || _a === void 0 ? void 0 : _a.page) || 'home';
-    const targetPage = page === 'login' || page === 'signup' ? 'auth' : page;
-    showPage(targetPage);
-});
-// When the site first loads
-const initialPage = window.location.hash.replace('#', '') || 'home';
-const targetPage = initialPage === 'login' || initialPage === 'signup' ? 'auth' : initialPage;
-showPage(targetPage);
-// ------------------------------
-// 2️⃣ Login / Signup Tab Switching
-// ------------------------------
-const loginTab = document.getElementById('loginTab');
-const signupTab = document.getElementById('signupTab');
-const loginForm = document.getElementById('loginForm');
-const signupForm = document.getElementById('signupForm');
-function showLoginForm() {
-    if (!loginForm || !signupForm || !loginTab || !signupTab)
-        return;
-    loginForm.classList.remove('hidden');
-    signupForm.classList.add('hidden');
-    loginTab.classList.add('bg-blue-600', 'text-white');
-    signupTab.classList.remove('bg-blue-600');
-    signupTab.classList.add('text-gray-400');
+        }
+        // Initialize page-specific logic based on current path
+        initPageLogic(path);
+    }));
+    // Start the router
+    router.start();
 }
-function showSignupForm() {
-    if (!loginForm || !signupForm || !loginTab || !signupTab)
-        return;
-    signupForm.classList.remove('hidden');
-    loginForm.classList.add('hidden');
-    signupTab.classList.add('bg-blue-600', 'text-white');
-    loginTab.classList.remove('bg-blue-600');
-    loginTab.classList.add('text-gray-400');
-}
-loginTab === null || loginTab === void 0 ? void 0 : loginTab.addEventListener('click', showLoginForm);
-signupTab === null || signupTab === void 0 ? void 0 : signupTab.addEventListener('click', showSignupForm);
-// Initialize login form by default
-showLoginForm();
-const switchToSignup = document.getElementById('switchToSignup');
-switchToSignup === null || switchToSignup === void 0 ? void 0 : switchToSignup.addEventListener('click', (e) => {
-    e.preventDefault();
-    showPage('auth');
-    showSignupForm();
-});
-const switchToSignupFromHome = document.getElementById('homeSignUpBtn');
-switchToSignupFromHome === null || switchToSignupFromHome === void 0 ? void 0 : switchToSignupFromHome.addEventListener('click', (e) => {
-    e.preventDefault();
-    showPage('auth');
-    showSignupForm();
-});
-const switchToLogInFromHome = document.getElementById('homeLogInBtn');
-switchToLogInFromHome === null || switchToLogInFromHome === void 0 ? void 0 : switchToLogInFromHome.addEventListener('click', (e) => {
-    e.preventDefault();
-    showPage('auth');
-    showLoginForm();
-});
-// ------------------------------
-// 3️⃣ Login / Signup Handlers
-// ------------------------------
-loginForm === null || loginForm === void 0 ? void 0 : loginForm.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, function* () {
-    e.preventDefault();
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
-    try {
-        const res = yield fetch("http://localhost:4000/api/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
-        const data = yield res.json();
-        if (res.ok) {
-            localStorage.setItem("user", JSON.stringify(data.user));
-            const userGreeting = document.getElementById("userGreeting");
-            if (userGreeting && data.user.username) {
-                userGreeting.textContent = `Welcome to your Dashboard, ${data.user.username}! 👋`;
+/**
+ * Initialize page-specific logic based on the current route
+ */
+function initPageLogic(path) {
+    // Clean up any previous event listeners or timers if needed
+    switch (path) {
+        case '/':
+            initHomePage();
+            break;
+        case '/login':
+            // Redirect to dashboard if already authenticated
+            if (AuthService.isAuthenticated()) {
+                window.location.href = '/dashboard';
+                return;
             }
-            showPage("dashboard");
-            history.pushState({ page: "dashboard" }, "", "#dashboard");
-        }
-        else {
-            alert(data.error);
-        }
+            initLoginPage();
+            break;
+        case '/sign':
+            // Redirect to dashboard if already authenticated
+            if (AuthService.isAuthenticated()) {
+                window.location.href = '/dashboard';
+                return;
+            }
+            initSignPage();
+            break;
+        case '/dashboard':
+            initDashboardPage();
+            break;
+        case '/profile':
+            initDashboardPage(); // Reuse dashboard logic for now
+            break;
+        case '/game':
+        case '/play':
+            initGamePage();
+            break;
+        default:
+            // Initialize basic functionality for other pages
+            initBasicFeatures();
+            break;
     }
-    catch (err) {
-        alert("Error connecting to server.");
-    }
-}));
-signupForm === null || signupForm === void 0 ? void 0 : signupForm.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, function* () {
-    e.preventDefault();
-    const username = document.getElementById("signupUsername").value;
-    const email = document.getElementById("signupEmail").value;
-    const password = document.getElementById("signupPassword").value;
-    try {
-        const res = yield fetch("http://localhost:4000/api/signup", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, email, password }),
+}
+/**
+ * Initialize basic features available on all pages
+ */
+function initBasicFeatures() {
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            Theme.toggle();
         });
-        const data = yield res.json();
-        if (res.ok) {
-            alert("Signup successful! Please log in.");
-            showLoginForm();
-        }
-        else {
-            alert(data.error);
-        }
     }
-    catch (err) {
-        alert("Error connecting to server.");
+    // Logout button
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            AuthService.logout();
+        });
     }
-}));
-// ------------------------------
-// 4️⃣ Logout + Session Persistence
-// ------------------------------
-const logoutBtn = document.getElementById("logoutBtn");
-logoutBtn === null || logoutBtn === void 0 ? void 0 : logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem("user");
-    showPage("home");
-    history.pushState({ page: "home" }, "", "#home");
-});
-// If user already logged in → auto redirect to dashboard
-const savedUser = localStorage.getItem("user");
-if (savedUser) {
-    const user = JSON.parse(savedUser);
-    const userGreeting = document.getElementById("userGreeting");
-    if (userGreeting && user.username) {
-        userGreeting.textContent = `Hello, ${user.username}! 👋`;
-    }
-    showPage("dashboard");
+}
+// Wait for DOM to be fully loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+}
+else {
+    initApp();
 }

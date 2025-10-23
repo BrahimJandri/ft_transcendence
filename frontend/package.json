@@ -1,6 +1,19 @@
 {
+  "name": "ft_transcendence-frontend",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/app.js",
   "scripts": {
-    "build": "tsc && npx tailwindcss -i ./styles.css -o ./dist/styles.css",
-    "start": "npm run build && lite-server"
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "npm run watch",
+    "start": "node server.js"
+  },
+  "keywords": ["spa", "typescript", "pong"],
+  "author": "",
+  "license": "ISC",
+  "description": "ft_transcendence Single Page Application",
+  "devDependencies": {
+    "typescript": "^5.0.0"
   }
 }
