@@ -3,6 +3,7 @@
  */
 
 import { Sidebar } from '../components/sidebar.js';
+import { NotificationDropdown } from '../components/notifications.js';
 
 export function SettingsPage(): string {
   return `
@@ -16,10 +17,7 @@ export function SettingsPage(): string {
                     <h2 class="text-2xl font-bold">Settings</h2>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button class="relative rounded-full p-2 hover:bg-gray-100 dark:hover:bg-[#2c404a]">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <span class="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary"></span>
-                    </button>
+                    ${NotificationDropdown()}
                     <div class="relative">
                         <button class="flex items-center gap-2">
                             <img alt="User avatar" id="userAvatar" class="h-10 w-10 rounded-full object-cover"
@@ -36,6 +34,14 @@ export function SettingsPage(): string {
                         <div class="rounded-lg bg-white dark:bg-card-dark p-6 shadow-md">
                             <h3 class="text-xl font-bold mb-6">Account</h3>
                             <div class="space-y-4">
+                                <div class="flex flex-col">
+                                    <label class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+                                        for="username">Username</label>
+                                    <input
+                                        class="w-full rounded-lg bg-gray-100 dark:bg-[#101d22] border-transparent focus:border-primary focus:ring-primary px-4 py-2"
+                                        id="settingsUsername" type="text" value="PlayerOne" readonly />
+                                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Username cannot be changed</p>
+                                </div>
                                 <div class="flex flex-col">
                                     <label class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
                                         for="email">Email Address</label>

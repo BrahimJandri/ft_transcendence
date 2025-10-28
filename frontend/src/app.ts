@@ -28,7 +28,10 @@ import { initHomePage } from './logic/homeLogic.js';
 import { initLoginPage } from './logic/loginLogic.js';
 import { initSignPage } from './logic/signLogic.js';
 import { initDashboardPage } from './logic/dashboardLogic.js';
+import { initProfilePage } from './logic/profileLogic.js';
+import { initSettingsPage } from './logic/settingsLogic.js';
 import { initGamePage } from './logic/gameLogic.js';
+import { initNotifications } from './logic/notificationLogic.js';
 
 // Initialize the application
 function initApp(): void {
@@ -112,15 +115,23 @@ function initPageLogic(path: string): void {
     
     case '/dashboard':
       initDashboardPage();
+      initBasicFeatures(); // Add logout and theme toggle
       break;
     
     case '/profile':
-      initDashboardPage(); // Reuse dashboard logic for now
+      initProfilePage(); // Use dedicated profile logic
+      initBasicFeatures(); // Add logout and theme toggle
+      break;
+    
+    case '/settings':
+      initSettingsPage(); // Use dedicated settings logic
+      initBasicFeatures(); // Add logout and theme toggle
       break;
     
     case '/game':
     case '/play':
       initGamePage();
+      initBasicFeatures(); // Add logout and theme toggle
       break;
     
     default:
@@ -134,6 +145,11 @@ function initPageLogic(path: string): void {
  * Initialize basic features available on all pages
  */
 function initBasicFeatures(): void {
+  // Initialize notifications for authenticated pages
+  if (AuthService.isAuthenticated()) {
+    initNotifications();
+  }
+
   // Theme toggle
   const themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
@@ -147,6 +163,45 @@ function initBasicFeatures(): void {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       AuthService.logout();
+    });
+  }
+
+  // Load and display user data for authenticated users
+  if (AuthService.isAuthenticated()) {
+    loadUserDataGlobally();
+  }
+}
+
+/**
+ * Load user data and update UI elements across all pages
+ */
+function loadUserDataGlobally(): void {
+  const user = AuthService.getUser();
+  
+  if (user) {
+    // Update user name in header (multiple possible elements)
+    const userNameElements = document.querySelectorAll('#userName, .user-name');
+    userNameElements.forEach(element => {
+      if (element) {
+        element.textContent = user.username;
+      }
+    });
+
+    // Update user avatar if available (multiple possible elements)
+    const userAvatarElements = document.querySelectorAll('#userAvatar, .user-avatar') as NodeListOf<HTMLImageElement>;
+    userAvatarElements.forEach(element => {
+      if (element && user.avatar) {
+        element.src = user.avatar;
+        element.alt = `${user.username}'s avatar`;
+      }
+    });
+
+    // Update user email if element exists
+    const userEmailElements = document.querySelectorAll('#userEmail, .user-email');
+    userEmailElements.forEach(element => {
+      if (element && user.email) {
+        element.textContent = user.email;
+      }
     });
   }
 }

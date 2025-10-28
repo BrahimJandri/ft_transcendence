@@ -60,6 +60,13 @@ export class ApiService {
         }
         catch (error) {
             console.error('API POST Error:', error);
+            // Check if it's a network error (backend not running)
+            if (error instanceof TypeError && error.message.includes('fetch')) {
+                return {
+                    success: false,
+                    error: 'Cannot connect to server. Please ensure the backend is running on http://localhost:4000',
+                };
+            }
             return {
                 success: false,
                 error: error instanceof Error ? error.message : 'Unknown error',

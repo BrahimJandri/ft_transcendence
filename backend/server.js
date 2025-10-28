@@ -26,38 +26,62 @@ fastify.post("/api/signup", async (request, reply) => {
 
   if (!username || !email || !password) {
     reply.code(400);
-    return { error: "All fields are required." };
+    return { message: "All fields are required." };
   }
 
-  const userExists = users.find((u) => u.email === email);
+  const userExists = users.find((u) => u.email === email || u.username === username);
   if (userExists) {
     reply.code(409);
-    return { error: "User already exists." };
+    return { message: "User already exists." };
   }
 
-  users.push({ username, email, password });
-  return { message: "Signup successful!", user: { username, email } };
+  const user = { 
+    id: String(users.length + 1),
+    username, 
+    email,
+    createdAt: new Date().toISOString()
+  };
+  
+  users.push({ ...user, password });
+  
+  const token = Buffer.from(`${username}:${Date.now()}`).toString('base64');
+  
+  return { 
+    token,
+    user,
+    message: "Signup successful!" 
+  };
 });
 
 // ----------------------------------------------------
 // Login route
 // ----------------------------------------------------
 fastify.post("/api/login", async (request, reply) => {
-  const { email, password } = request.body;
+  const { username, password } = request.body;
 
-  if (!email || !password) {
+  if (!username || !password) {
     reply.code(400);
-    return { error: "Email and password are required." };
+    return { message: "Username and password are required." };
   }
 
-  const user = users.find((u) => u.email === email && u.password === password);
+  // Allow login with either username or email
+  const userRecord = users.find((u) => 
+    (u.username === username || u.email === username) && u.password === password
+  );
 
-  if (!user) {
+  if (!userRecord) {
     reply.code(401);
-    return { error: "Invalid email or password." };
+    return { message: "Invalid username or password." };
   }
 
-  return { message: "Login successful!", user: { username: user.username, email } };
+  const { password: _, ...user } = userRecord;
+  const token = Buffer.from(`${userRecord.username}:${Date.now()}`).toString('base64');
+
+  return { 
+    token,
+    user,
+    message: "Login successful!" 
+  };
 });
 
 // ----------------------------------------------------

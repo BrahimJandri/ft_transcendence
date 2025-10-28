@@ -81,7 +81,7 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`\n🚀 Server running at http://localhost:${PORT}/`);
+  console.log(`\n🚀 Server running at http://localhost:${PORT}`);
   console.log(`📁 Serving files from: ${path.resolve('.')}`);
   console.log(`🔄 SPA fallback routing enabled`);
   console.log(`\nPress Ctrl+C to stop the server\n`);

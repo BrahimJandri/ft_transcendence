@@ -2,6 +2,7 @@
  * Find Match Page - Converted from findMatch.html
  */
 import { Sidebar } from '../components/sidebar.js';
+import { NotificationDropdown } from '../components/notifications.js';
 export function FindMatchPage() {
     return `
     <title>Ping Pong Game - Finding Match</title>
@@ -28,10 +29,7 @@ export function FindMatchPage() {
                     <h2 class="text-2xl font-bold">Find Match</h2>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button class="relative rounded-full p-2 hover:bg-gray-100 dark:hover:bg-[#2c404a]">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <span class="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary"></span>
-                    </button>
+                    ${NotificationDropdown()}
                     <div class="relative">
                         <button class="flex items-center gap-2">
                             <img alt="User avatar" id="userAvatar" class="h-10 w-10 rounded-full object-cover"

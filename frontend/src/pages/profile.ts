@@ -3,6 +3,7 @@
  */
 
 import { Sidebar } from '../components/sidebar.js';
+import { NotificationDropdown } from '../components/notifications.js';
 
 export function ProfilePage(): string {
   return `
@@ -16,10 +17,7 @@ export function ProfilePage(): string {
                     <h2 class="text-2xl font-bold">Profile</h2>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button class="relative rounded-full p-2 hover:bg-gray-100 dark:hover:bg-[#2c404a]">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <span class="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary"></span>
-                    </button>
+                    ${NotificationDropdown()}
                     
                     <div class="relative">
                         <button class="flex items-center gap-2">
@@ -42,7 +40,9 @@ export function ProfilePage(): string {
                         </div>
                         <div class="text-center">
                             <h3 class="text-2xl font-bold" id="profileUserName">PlayerOne</h3>
-                            <p class="text-green-500">Online</p>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm" id="profileEmail">player@example.com</p>
+                            <p class="text-green-500 mt-1">Online</p>
+                            <p class="text-gray-400 dark:text-gray-500 text-xs mt-2">Member since <span id="memberSince">January 2024</span></p>
                         </div>
                         <button
                             class="flex items-center gap-2 rounded-full bg-gray-200 dark:bg-[#2c404a] px-4 py-2 text-sm font-semibold hover:bg-gray-300 dark:hover:bg-[#3e5663]">

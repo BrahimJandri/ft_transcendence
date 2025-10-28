@@ -71,7 +71,7 @@ export function initLoginPage() {
         const originalText = loginBtn.innerHTML;
         loginBtn.innerHTML = '<span class="truncate">Signing in...</span>';
         try {
-            // Attempt login  (using email as username for now)
+            // Attempt login (backend accepts both username and email in the username field)
             const response = await AuthService.login({ username: email, password });
             if (response.success) {
                 showSuccess('Login successful! Redirecting...');

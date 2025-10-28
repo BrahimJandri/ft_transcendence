@@ -7,7 +7,6 @@ import { ApiService } from '../services/apiService.js';
 import type { GameStats, Match } from '../types/index.js';
 
 export function initDashboardPage(): void {
-  // Find Match button - already has data-link attribute, router will handle it
   console.log('Dashboard initialized');
 
   // Load user stats

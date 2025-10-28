@@ -14,24 +14,33 @@ export class AuthService {
    */
   static async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const response = await ApiService.post<AuthResponse>('/auth/login', credentials);
+      const response = await ApiService.post<AuthResponse>('/login', credentials);
       
-      if (response.success && response.data?.token) {
-        this.setToken(response.data.token);
-        if (response.data.user) {
-          this.setUser(response.data.user);
+      // The API returns { token, user, message } directly in response.data
+      const token = (response.data as any)?.token;
+      const user = (response.data as any)?.user;
+      const message = (response.data as any)?.message;
+      
+      console.log('Login response:', response);
+      console.log('Extracted token:', token);
+      console.log('Extracted user:', user);
+      
+      if (response.success && token) {
+        this.setToken(token);
+        if (user) {
+          this.setUser(user);
         }
         return {
           success: true,
-          token: response.data.token,
-          user: response.data.user,
-          message: 'Login successful',
+          token: token,
+          user: user,
+          message: message || 'Login successful',
         };
       }
 
       return {
         success: false,
-        message: response.message || 'Login failed',
+        message: message || response.message || response.error || 'Login failed',
       };
     } catch (error) {
       console.error('Login error:', error);
@@ -47,24 +56,30 @@ export class AuthService {
    */
   static async register(credentials: RegisterCredentials): Promise<AuthResponse> {
     try {
-      const response = await ApiService.post<AuthResponse>('/auth/register', credentials);
+      const response = await ApiService.post<AuthResponse>('/signup', credentials);
       
-      if (response.success && response.data?.token) {
-        this.setToken(response.data.token);
-        if (response.data.user) {
-          this.setUser(response.data.user);
-        }
+      // The API returns { token, user, message } directly in response.data
+      const token = (response.data as any)?.token;
+      const user = (response.data as any)?.user;
+      const message = (response.data as any)?.message;
+      
+      console.log('Register response:', response);
+      console.log('Extracted token:', token);
+      console.log('Extracted user:', user);
+      
+      if (response.success) {
+        // Do NOT save token/user on registration - user must login first
         return {
           success: true,
-          token: response.data.token,
-          user: response.data.user,
-          message: 'Registration successful',
+          token: token,
+          user: user,
+          message: message || 'Registration successful',
         };
       }
 
       return {
         success: false,
-        message: response.message || 'Registration failed',
+        message: message || response.message || response.error || 'Registration failed',
       };
     } catch (error) {
       console.error('Registration error:', error);

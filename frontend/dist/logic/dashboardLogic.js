@@ -3,7 +3,6 @@
  */
 import { ApiService } from '../services/apiService.js';
 export function initDashboardPage() {
-    // Find Match button - already has data-link attribute, router will handle it
     console.log('Dashboard initialized');
     // Load user stats
     loadUserStats();

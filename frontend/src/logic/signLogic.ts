@@ -137,9 +137,9 @@ export function initSignPage(): void {
       const response = await AuthService.register({ username, email, password });
 
       if (response.success) {
-        showSuccess('Account created successfully! Redirecting...');
+        showSuccess('Account created successfully! Redirecting to login page...');
         setTimeout(() => {
-          window.location.href = '/dashboard';
+          window.location.href = '/login';
         }, 1500);
       } else {
         showError(response.message || 'Registration failed. Please try again.');
