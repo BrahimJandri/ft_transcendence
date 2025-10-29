@@ -35,12 +35,13 @@ export function DashboardPage(): string {
                             <h3 class="text-xl font-bold mb-4">Quick Match</h3>
                             <p class="text-gray-600 dark:text-[#90b7cb] mb-6">Find an opponent and start a game right
                                 away.</p>
-                            <button
-                                id="findMatchBtn"
+                            <a
+                                href="/findMatch"
+                                data-link
                                 class="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-lg font-bold text-white transition-transform duration-200 hover:scale-105">
                                 <span class="material-symbols-outlined">bolt</span>
                                 <span>Find Match</span>
-                            </button>
+                            </a>
                         </div>
                         <div class="rounded-lg bg-white dark:bg-card-dark p-6 shadow-md">
                             <h3 class="text-xl font-bold mb-4">Active Games</h3>
