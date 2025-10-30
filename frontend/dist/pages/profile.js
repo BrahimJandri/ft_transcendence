@@ -43,6 +43,7 @@ export function ProfilePage() {
                             <p class="text-gray-400 dark:text-gray-500 text-xs mt-2">Member since <span id="memberSince">January 2024</span></p>
                         </div>
                         <button
+                            id="editProfileBtn"
                             class="flex items-center gap-2 rounded-full bg-gray-200 dark:bg-[#2c404a] px-4 py-2 text-sm font-semibold hover:bg-gray-300 dark:hover:bg-[#3e5663]">
                             <span class="material-symbols-outlined text-base">edit</span>
                             Edit Profile
@@ -160,6 +161,107 @@ export function ProfilePage() {
                     </div>
                 </div>
             </main>
+        </div>
+        
+        <!-- Edit Profile Modal -->
+        <div id="editProfileModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-card-dark rounded-xl shadow-2xl w-full max-w-md transform transition-all">
+                <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-[#2c404a]">
+                    <h2 class="text-2xl font-bold">Edit Profile</h2>
+                    <button id="closeModalBtn" class="p-2 hover:bg-gray-100 dark:hover:bg-[#2c404a] rounded-full">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                
+                <form id="editProfileForm" class="p-6 space-y-6">
+                    <!-- Profile Image Upload -->
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="relative">
+                            <img id="previewAvatar" class="w-24 h-24 rounded-full object-cover border-4 border-primary" 
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-N19gLklmEeuPwc97l42RS9N3PjTe8uVnT_HAhZyFttl1ztdnkc_pxuLkGtZuH-kR1DZrLWrG1ltixhC0hasi4nEjc-ZQFEJh6QuUYwWH2nxQtocaFCWI3t9OXTDq79Q4gbSISy1ZjGE5gCLPnxU8mnSM85KU9QitPgyNKVDJcUFwP_4jQ0R1IVzXq3kKrN2UJ2lCgnGjRIwJ623jdNx_W10ykwt6kZZnqzvL_YZhtofeV6DpW4asuEUb5aSe2ErIsPGJCACSCiU" 
+                                alt="Profile Preview" />
+                            <button type="button" id="uploadAvatarBtn" class="absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full hover:bg-primary/90">
+                                <span class="material-symbols-outlined text-sm">photo_camera</span>
+                            </button>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*" class="hidden" />
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Click camera icon to upload new photo</p>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div>
+                        <label for="editEmail" class="block text-sm font-semibold mb-2">Email</label>
+                        <input 
+                            type="email" 
+                            id="editEmail" 
+                            class="w-full rounded-lg bg-gray-100 dark:bg-[#101d22] border-transparent focus:border-primary focus:ring-primary px-4 py-3"
+                            placeholder="your.email@example.com" />
+                    </div>
+
+                    <!-- Username Field (Read-only for now) -->
+                    <div>
+                        <label for="editUsername" class="block text-sm font-semibold mb-2">Username</label>
+                        <input 
+                            type="text" 
+                            id="editUsername" 
+                            class="w-full rounded-lg bg-gray-100 dark:bg-[#101d22] border-transparent px-4 py-3 opacity-60 cursor-not-allowed"
+                            placeholder="username"
+                            readonly />
+                        <p class="text-xs text-gray-500 mt-1">Username cannot be changed</p>
+                    </div>
+
+                    <!-- Current Password -->
+                    <div>
+                        <label for="currentPassword" class="block text-sm font-semibold mb-2">Current Password</label>
+                        <input 
+                            type="password" 
+                            id="currentPassword" 
+                            class="w-full rounded-lg bg-gray-100 dark:bg-[#101d22] border-transparent focus:border-primary focus:ring-primary px-4 py-3"
+                            placeholder="Enter current password to change password" />
+                    </div>
+
+                    <!-- New Password -->
+                    <div>
+                        <label for="newPassword" class="block text-sm font-semibold mb-2">New Password</label>
+                        <input 
+                            type="password" 
+                            id="newPassword" 
+                            class="w-full rounded-lg bg-gray-100 dark:bg-[#101d22] border-transparent focus:border-primary focus:ring-primary px-4 py-3"
+                            placeholder="Leave empty to keep current password" />
+                    </div>
+
+                    <!-- Confirm New Password -->
+                    <div>
+                        <label for="confirmPassword" class="block text-sm font-semibold mb-2">Confirm New Password</label>
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            class="w-full rounded-lg bg-gray-100 dark:bg-[#101d22] border-transparent focus:border-primary focus:ring-primary px-4 py-3"
+                            placeholder="Confirm new password" />
+                    </div>
+
+                    <!-- Error Message -->
+                    <div id="editProfileError" class="hidden text-red-500 text-sm text-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg"></div>
+                    
+                    <!-- Success Message -->
+                    <div id="editProfileSuccess" class="hidden text-green-500 text-sm text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg"></div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-3">
+                        <button 
+                            type="button" 
+                            id="cancelEditBtn"
+                            class="flex-1 px-6 py-3 rounded-lg bg-gray-200 dark:bg-[#2c404a] hover:bg-gray-300 dark:hover:bg-[#3e5663] font-semibold">
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit" 
+                            class="flex-1 px-6 py-3 rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
   `;

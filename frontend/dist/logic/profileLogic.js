@@ -11,6 +11,8 @@ export function initProfilePage() {
     loadProfileStats();
     // Load match history
     loadMatchHistory();
+    // Initialize edit profile functionality
+    initEditProfile();
 }
 function loadUserProfile() {
     const user = AuthService.getUser();
@@ -135,4 +137,238 @@ async function loadMatchHistory() {
       </tr>
     `;
     }
+}
+/**
+ * Initialize edit profile functionality
+ */
+function initEditProfile() {
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const editProfileModal = document.getElementById('editProfileModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const editProfileForm = document.getElementById('editProfileForm');
+    const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
+    const avatarInput = document.getElementById('avatarInput');
+    const previewAvatar = document.getElementById('previewAvatar');
+    if (!editProfileBtn || !editProfileModal || !editProfileForm)
+        return;
+    // Open modal
+    editProfileBtn.addEventListener('click', () => {
+        const user = AuthService.getUser();
+        if (user) {
+            // Pre-fill form with current user data
+            const editEmail = document.getElementById('editEmail');
+            const editUsername = document.getElementById('editUsername');
+            if (editEmail)
+                editEmail.value = user.email || '';
+            if (editUsername)
+                editUsername.value = user.username || '';
+            if (previewAvatar && user.avatar)
+                previewAvatar.src = user.avatar;
+        }
+        editProfileModal.classList.remove('hidden');
+    });
+    // Close modal
+    const closeModal = () => {
+        editProfileModal.classList.add('hidden');
+        editProfileForm.reset();
+        hideMessages();
+    };
+    if (closeModalBtn)
+        closeModalBtn.addEventListener('click', closeModal);
+    if (cancelEditBtn)
+        cancelEditBtn.addEventListener('click', closeModal);
+    // Click outside modal to close
+    editProfileModal.addEventListener('click', (e) => {
+        if (e.target === editProfileModal) {
+            closeModal();
+        }
+    });
+    // Handle avatar upload button click
+    if (uploadAvatarBtn && avatarInput) {
+        uploadAvatarBtn.addEventListener('click', () => {
+            avatarInput.click();
+        });
+        // Preview avatar when file is selected
+        avatarInput.addEventListener('change', (e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    showError('Please select a valid image file');
+                    return;
+                }
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showError('Image size must be less than 5MB');
+                    return;
+                }
+                // Preview the image
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    if (event.target?.result && previewAvatar) {
+                        previewAvatar.src = event.target.result;
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    // Handle form submission
+    editProfileForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideMessages();
+        const editEmail = document.getElementById('editEmail');
+        const currentPassword = document.getElementById('currentPassword');
+        const newPassword = document.getElementById('newPassword');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const user = AuthService.getUser();
+        if (!user) {
+            showError('User not found. Please login again.');
+            return;
+        }
+        // Validate passwords if changing password
+        if (newPassword.value) {
+            if (!currentPassword.value) {
+                showError('Please enter your current password');
+                return;
+            }
+            if (newPassword.value.length < 6) {
+                showError('New password must be at least 6 characters');
+                return;
+            }
+            if (newPassword.value !== confirmPassword.value) {
+                showError('New passwords do not match');
+                return;
+            }
+        }
+        // Validate email
+        if (editEmail.value && !isValidEmail(editEmail.value)) {
+            showError('Please enter a valid email address');
+            return;
+        }
+        try {
+            // Prepare update data
+            const updates = {};
+            let hasChanges = false;
+            // Check if email changed
+            if (editEmail.value && editEmail.value !== user.email) {
+                updates.email = editEmail.value;
+                hasChanges = true;
+            }
+            // Check if password is being changed
+            if (newPassword.value) {
+                updates.currentPassword = currentPassword.value;
+                updates.newPassword = newPassword.value;
+                hasChanges = true;
+            }
+            // Check if avatar changed
+            if (avatarInput.files && avatarInput.files[0]) {
+                // Convert image to base64
+                const avatarBase64 = await fileToBase64(avatarInput.files[0]);
+                updates.avatar = avatarBase64;
+                hasChanges = true;
+            }
+            if (!hasChanges) {
+                showError('No changes detected');
+                return;
+            }
+            // Update user profile (for now, update localStorage)
+            // In a real app, this would be an API call
+            const updatedUser = { ...user, ...updates };
+            // Validate current password if changing password
+            if (updates.newPassword) {
+                // In real app, verify with backend
+                // For demo, just update the user object
+                delete updatedUser.currentPassword;
+                updatedUser.password = updates.newPassword;
+                delete updatedUser.newPassword;
+            }
+            // Save updated user
+            AuthService.setUser(updatedUser);
+            // Update all avatar and email elements on the page
+            if (updates.avatar) {
+                const avatars = document.querySelectorAll('#userAvatar, #profileAvatar, .user-avatar');
+                avatars.forEach(avatar => {
+                    if (avatar instanceof HTMLImageElement) {
+                        avatar.src = updates.avatar;
+                    }
+                });
+            }
+            if (updates.email) {
+                const emails = document.querySelectorAll('#userEmail, #profileEmail, .user-email');
+                emails.forEach(emailEl => {
+                    if (emailEl) {
+                        emailEl.textContent = updates.email;
+                    }
+                });
+            }
+            showSuccess('Profile updated successfully!');
+            // Close modal after 1.5 seconds
+            setTimeout(() => {
+                closeModal();
+            }, 1500);
+        }
+        catch (error) {
+            console.error('Error updating profile:', error);
+            showError('Failed to update profile. Please try again.');
+        }
+    });
+}
+/**
+ * Validate email format
+ */
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+/**
+ * Convert file to base64
+ */
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+/**
+ * Show error message
+ */
+function showError(message) {
+    const errorEl = document.getElementById('editProfileError');
+    const successEl = document.getElementById('editProfileSuccess');
+    if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.classList.remove('hidden');
+    }
+    if (successEl) {
+        successEl.classList.add('hidden');
+    }
+}
+/**
+ * Show success message
+ */
+function showSuccess(message) {
+    const errorEl = document.getElementById('editProfileError');
+    const successEl = document.getElementById('editProfileSuccess');
+    if (successEl) {
+        successEl.textContent = message;
+        successEl.classList.remove('hidden');
+    }
+    if (errorEl) {
+        errorEl.classList.add('hidden');
+    }
+}
+/**
+ * Hide all messages
+ */
+function hideMessages() {
+    const errorEl = document.getElementById('editProfileError');
+    const successEl = document.getElementById('editProfileSuccess');
+    if (errorEl)
+        errorEl.classList.add('hidden');
+    if (successEl)
+        successEl.classList.add('hidden');
 }

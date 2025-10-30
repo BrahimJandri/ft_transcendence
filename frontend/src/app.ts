@@ -31,6 +31,7 @@ import { initDashboardPage } from './logic/dashboardLogic.js';
 import { initProfilePage } from './logic/profileLogic.js';
 import { initSettingsPage } from './logic/settingsLogic.js';
 import { initGamePage } from './logic/gameLogic.js';
+import { initChatPage } from './logic/chatLogic.js';
 import { initNotifications } from './logic/notificationLogic.js';
 
 // Initialize the application
@@ -125,6 +126,11 @@ function initPageLogic(path: string): void {
     
     case '/settings':
       initSettingsPage(); // Use dedicated settings logic
+      initBasicFeatures(); // Add logout and theme toggle
+      break;
+    
+    case '/chat':
+      initChatPage(); // Use dedicated chat logic
       initBasicFeatures(); // Add logout and theme toggle
       break;
     
