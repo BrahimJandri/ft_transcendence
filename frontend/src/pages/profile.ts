@@ -4,6 +4,7 @@
 
 import { Sidebar } from '../components/sidebar.js';
 import { NotificationDropdown } from '../components/notifications.js';
+import { UserDropdown } from '../components/userDropdown.js';
 
 export function ProfilePage(): string {
   return `
@@ -18,25 +19,20 @@ export function ProfilePage(): string {
                 </div>
                 <div class="flex items-center gap-4">
                     ${NotificationDropdown()}
-                    
-                    <div class="relative">
-                        <button class="flex items-center gap-2">
-                            <img alt="User avatar" id="userAvatar" class="h-10 w-10 rounded-full object-cover"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-N19gLklmEeuPwc97l42RS9N3PjTe8uVnT_HAhZyFttl1ztdnkc_pxuLkGtZuH-kR1DZrLWrG1ltixhC0hasi4nEjc-ZQFEJh6QuUYwWH2nxQtocaFCWI3t9OXTDq79Q4gbSISy1ZjGE5gCLPnxU8mnSM85KU9QitPgyNKVDJcUFwP_4jQ0R1IVzXq3kKrN2UJ2lCgnGjRIwJ623jdNx_W10ykwt6kZZnqzvL_YZhtofeV6DpW4asuEUb5aSe2ErIsPGJCACSCiU" />
-                            <span class="font-medium" id="userName">PlayerOne</span>
-                            <span class="material-symbols-outlined">expand_more</span>
-                        </button>
-                    </div>
+                    ${UserDropdown()}
                 </div>
             </header>
             <main class="flex-1 overflow-y-auto p-6 lg:p-8">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="lg:col-span-1 flex flex-col items-center space-y-6">
-                        <div class="relative">
+                        <div class="relative group">
                             <img alt="User Avatar" id="profileAvatar" class="w-40 h-40 rounded-full object-cover border-4 border-primary"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-N19gLklmEeuPwc97l42RS9N3PjTe8uVnT_HAhZyFttl1ztdnkc_pxuLkGtZuH-kR1DZrLWrG1ltixhC0hasi4nEjc-ZQFEJh6QuUYwWH2nxQtocaFCWI3t9OXTDq79Q4gbSISy1ZjGE5gCLPnxU8mnSM85KU9QitPgyNKVDJcUFwP_4jQ0R1IVzXq3kKrN2UJ2lCgnGjRIwJ623jdNx_W10ykwt6kZZnqzvL_YZhtofeV6DpW4asuEUb5aSe2ErIsPGJCACSCiU" />
-                            <span
-                                class="absolute bottom-2 right-2 h-6 w-6 rounded-full bg-green-500 border-4 border-white dark:border-card-dark"></span>
+                            <button
+                                id="statusIndicator"
+                                title="Click to change status"
+                                class="absolute bottom-2 right-2 h-6 w-6 rounded-full bg-green-500 border-4 border-white dark:border-card-dark cursor-pointer hover:scale-110 transition-transform duration-200">
+                            </button>
                         </div>
                         <div class="text-center">
                             <h3 class="text-2xl font-bold" id="profileUserName">PlayerOne</h3>

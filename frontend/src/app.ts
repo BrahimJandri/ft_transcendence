@@ -33,6 +33,7 @@ import { initSettingsPage } from './logic/settingsLogic.js';
 import { initGamePage } from './logic/gameLogic.js';
 import { initChatPage } from './logic/chatLogic.js';
 import { initNotifications } from './logic/notificationLogic.js';
+import { initUserDropdown } from './logic/userDropdownLogic.js';
 
 // Initialize the application
 function initApp(): void {
@@ -154,6 +155,7 @@ function initBasicFeatures(): void {
   // Initialize notifications for authenticated pages
   if (AuthService.isAuthenticated()) {
     initNotifications();
+    initUserDropdown();
   }
 
   // Theme toggle

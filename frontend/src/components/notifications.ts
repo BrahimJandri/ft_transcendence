@@ -14,7 +14,7 @@ export function NotificationDropdown(): string {
             <div class="p-4 border-b border-gray-200 dark:border-[#2c404a]">
                 <h3 class="font-bold text-lg">Notifications</h3>
             </div>
-            <div id="notificationList" class="divide-y divide-gray-200 dark:divide-[#2c404a] max-h-96 overflow-y-auto">
+            <div id="notificationList" class="divide-y divide-gray-200 dark:divide-[#2c404a] max-h-96 overflow-y-auto scrollbar-hide">
                 <a class="flex items-start gap-4 p-4 hover:bg-gray-50 dark:hover:bg-[#2c404a]" href="#">
                     <span class="material-symbols-outlined text-primary mt-1">sports_tennis</span>
                     <div class="flex-1">

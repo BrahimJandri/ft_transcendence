@@ -25,9 +25,11 @@ interface Chat {
 
 let messageIdCounter = 1;
 
-const currentUser = {
-  avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-N19gLklmEeuPwc97l42RS9N3PjTe8uVnT_HAhZyFttl1ztdnkc_pxuLkGtZuH-kR1DZrLWrG1ltixhC0hasi4nEjc-ZQFEJh6QuUYwWH2nxQtocaFCWI3t9OXTDq79Q4gbSISy1ZjGE5gCLPnxU8mnSM85KU9QitPgyNKVDJcUFwP_4jQ0R1IVzXq3kKrN2UJ2lCgnGjRIwJ623jdNx_W10ykwt6kZZnqzvL_YZhtofeV6DpW4asuEUb5aSe2ErIsPGJCACSCiU'
-};
+// Get current user avatar dynamically
+function getCurrentUserAvatar(): string {
+  const user = AuthService.getUser();
+  return user?.avatar || 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-N19gLklmEeuPwc97l42RS9N3PjTe8uVnT_HAhZyFttl1ztdnkc_pxuLkGtZuH-kR1DZrLWrG1ltixhC0hasi4nEjc-ZQFEJh6QuUYwWH2nxQtocaFCWI3t9OXTDq79Q4gbSISy1ZjGE5gCLPnxU8mnSM85KU9QitPgyNKVDJcUFwP_4jQ0R1IVzXq3kKrN2UJ2lCgnGjRIwJ623jdNx_W10ykwt6kZZnqzvL_YZhtofeV6DpW4asuEUb5aSe2ErIsPGJCACSCiU';
+}
 
 // Multiple chat conversations
 const chats: Chat[] = [
@@ -51,7 +53,7 @@ const chats: Chat[] = [
         sender: 'user',
         text: "Totally! I'm free now. Let's go!",
         time: '10:31 AM',
-        avatar: currentUser.avatar
+        avatar: getCurrentUserAvatar()
       },
       {
         id: 3,
@@ -113,7 +115,7 @@ const chats: Chat[] = [
         sender: 'user',
         text: "Let's do it!",
         time: 'Yesterday',
-        avatar: currentUser.avatar
+        avatar: getCurrentUserAvatar()
       }
     ]
   }
@@ -244,7 +246,7 @@ function sendMessage(text: string): void {
     sender: 'user',
     text: text.trim(),
     time: getCurrentTime(),
-    avatar: currentUser.avatar
+    avatar: getCurrentUserAvatar()
   };
   currentChat.messages.push(userMessage);
   currentChat.lastMessage = text.trim();
@@ -313,6 +315,23 @@ export function initChatPage(): void {
       }
     });
   });
+
+  // Listen for avatar updates and refresh messages
+  window.addEventListener('userAvatarUpdated', ((e: CustomEvent) => {
+    const { avatarUrl } = e.detail;
+    
+    // Update all user messages in all chats with new avatar
+    chats.forEach(chat => {
+      chat.messages.forEach(message => {
+        if (message.sender === 'user') {
+          message.avatar = avatarUrl;
+        }
+      });
+    });
+    
+    // Refresh the displayed messages
+    displayMessages();
+  }) as EventListener);
 
   // Display initial chat
   updateChatHeader();

@@ -4,6 +4,7 @@
 
 import { Sidebar } from '../components/sidebar.js';
 import { NotificationDropdown } from '../components/notifications.js';
+import { UserDropdown } from '../components/userDropdown.js';
 
 export function SettingsPage(): string {
   return `
@@ -18,14 +19,7 @@ export function SettingsPage(): string {
                 </div>
                 <div class="flex items-center gap-4">
                     ${NotificationDropdown()}
-                    <div class="relative">
-                        <button class="flex items-center gap-2">
-                            <img alt="User avatar" id="userAvatar" class="h-10 w-10 rounded-full object-cover"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-N19gLklmEeuPwc97l42RS9N3PjTe8uVnT_HAhZyFttl1ztdnkc_pxuLkGtZuH-kR1DZrLWrG1ltixhC0hasi4nEjc-ZQFEJh6QuUYwWH2nxQtocaFCWI3t9OXTDq79Q4gbSISy1ZjGE5gCLPnxU8mnSM85KU9QitPgyNKVDJcUFwP_4jQ0R1IVzXq3kKrN2UJ2lCgnGjRIwJ623jdNx_W10ykwt6kZZnqzvL_YZhtofeV6DpW4asuEUb5aSe2ErIsPGJCACSCiU" />
-                            <span class="font-medium" id="userName">PlayerOne</span>
-                            <span class="material-symbols-outlined">expand_more</span>
-                        </button>
-                    </div>
+                    ${UserDropdown()}
                 </div>
             </header>
             <main class="flex-1 overflow-y-auto p-6 lg:p-8">
@@ -90,34 +84,6 @@ export function SettingsPage(): string {
                         </div>
                     </div>
                     <div class="space-y-8">
-                        <div class="rounded-lg bg-white dark:bg-card-dark p-6 shadow-md">
-                            <h3 class="text-xl font-bold mb-6">Display &amp; Language</h3>
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between">
-                                    <label class="font-medium" for="theme">Theme</label>
-                                    <div class="flex items-center gap-2 rounded-full p-1 bg-gray-100 dark:bg-[#101d22]">
-                                        <button id="lightModeBtn" class="p-2 rounded-full">
-                                            <span class="material-symbols-outlined">light_mode</span>
-                                        </button>
-                                        <button id="darkModeBtn" class="p-2 rounded-full bg-primary text-white">
-                                            <span class="material-symbols-outlined">dark_mode</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col">
-                                    <label class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
-                                        for="language">Language</label>
-                                    <select
-                                        class="w-full rounded-lg bg-gray-100 dark:bg-[#101d22] border-transparent focus:border-primary focus:ring-primary px-4 py-2"
-                                        id="language">
-                                        <option>English</option>
-                                        <option>Français</option>
-                                        <option>Español</option>
-                                        <option>Deutsch</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
                         <div class="rounded-lg bg-white dark:bg-card-dark p-6 shadow-md">
                             <h3 class="text-xl font-bold mb-6">Notifications</h3>
                             <div class="space-y-4">

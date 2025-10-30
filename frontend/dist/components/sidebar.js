@@ -54,6 +54,12 @@ export function Sidebar(activePage = '') {
                 <span class="material-symbols-outlined">account_circle</span>
                 <span>Profile</span>
             </a>
+            <button id="themeToggle" class="flex w-full items-center gap-3 rounded-lg px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#2c404a]">
+                <span class="material-symbols-outlined theme-icon-light hidden dark:inline">light_mode</span>
+                <span class="material-symbols-outlined theme-icon-dark inline dark:hidden">dark_mode</span>
+                <span class="theme-text-light hidden dark:inline">Light Mode</span>
+                <span class="theme-text-dark inline dark:hidden">Dark Mode</span>
+            </button>
             <button id="logoutBtn" class="flex w-full items-center gap-3 rounded-lg px-4 py-3 hover:bg-red-100 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400">
                 <span class="material-symbols-outlined">logout</span>
                 <span>Logout</span>

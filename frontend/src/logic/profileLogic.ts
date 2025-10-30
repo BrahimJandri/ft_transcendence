@@ -20,6 +20,9 @@ export function initProfilePage(): void {
 
   // Initialize edit profile functionality
   initEditProfile();
+
+  // Initialize status indicator
+  initStatusIndicator();
 }
 
 function loadUserProfile(): void {
@@ -322,12 +325,7 @@ function initEditProfile(): void {
 
       // Update all avatar and email elements on the page
       if (updates.avatar) {
-        const avatars = document.querySelectorAll('#userAvatar, #profileAvatar, .user-avatar');
-        avatars.forEach(avatar => {
-          if (avatar instanceof HTMLImageElement) {
-            avatar.src = updates.avatar;
-          }
-        });
+        updateAllAvatars(updates.avatar);
       }
 
       if (updates.email) {
@@ -414,4 +412,109 @@ function hideMessages(): void {
   
   if (errorEl) errorEl.classList.add('hidden');
   if (successEl) successEl.classList.add('hidden');
+}
+
+/**
+ * Update all avatar instances across the application
+ */
+function updateAllAvatars(avatarUrl: string): void {
+  // Update all avatar elements on the page
+  const avatars = document.querySelectorAll('#userAvatar, #profileAvatar, .user-avatar, .chat-user-avatar');
+  avatars.forEach(avatar => {
+    if (avatar instanceof HTMLImageElement) {
+      avatar.src = avatarUrl;
+    }
+  });
+
+  // Also update any inline style background images
+  const bgAvatars = document.querySelectorAll('[data-user-avatar-bg]');
+  bgAvatars.forEach(el => {
+    if (el instanceof HTMLElement) {
+      el.style.backgroundImage = `url('${avatarUrl}')`;
+    }
+  });
+
+  // Trigger a custom event so chat and other components can update
+  window.dispatchEvent(new CustomEvent('userAvatarUpdated', { 
+    detail: { avatarUrl } 
+  }));
+}
+
+/**
+ * Initialize status indicator functionality
+ */
+function initStatusIndicator(): void {
+  const statusIndicator = document.getElementById('statusIndicator');
+  const statusText = document.querySelector('.text-green-500.mt-1') as HTMLElement;
+
+  if (!statusIndicator) return;
+
+  // Available statuses
+  const statuses = [
+    { name: 'Online', color: 'bg-green-500', textColor: 'text-green-500' },
+    { name: 'Away', color: 'bg-yellow-500', textColor: 'text-yellow-500' },
+    { name: 'Do Not Disturb', color: 'bg-red-500', textColor: 'text-red-500' },
+    { name: 'Offline', color: 'bg-gray-500', textColor: 'text-gray-500' }
+  ];
+
+  let currentStatusIndex = 0;
+
+  // Handle status indicator click
+  statusIndicator.addEventListener('click', () => {
+    // Cycle to next status
+    currentStatusIndex = (currentStatusIndex + 1) % statuses.length;
+    const newStatus = statuses[currentStatusIndex];
+
+    // Remove all color classes
+    statusIndicator.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-red-500', 'bg-gray-500');
+    
+    // Add new color class
+    statusIndicator.classList.add(newStatus.color);
+
+    // Update status text
+    if (statusText) {
+      statusText.classList.remove('text-green-500', 'text-yellow-500', 'text-red-500', 'text-gray-500');
+      statusText.classList.add(newStatus.textColor);
+      statusText.textContent = newStatus.name;
+    }
+
+    // Update tooltip
+    statusIndicator.title = `Status: ${newStatus.name}. Click to change`;
+
+    // Save status to user profile (optional)
+    const user = AuthService.getUser();
+    if (user) {
+      user.status = newStatus.name;
+      AuthService.setUser(user);
+    }
+
+    // Show a brief notification
+    showStatusNotification(newStatus.name);
+  });
+}
+
+/**
+ * Show a brief status change notification
+ */
+function showStatusNotification(status: string): void {
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.className = 'fixed bottom-4 right-4 bg-primary text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300';
+  notification.textContent = `Status changed to ${status}`;
+  
+  document.body.appendChild(notification);
+
+  // Animate in
+  setTimeout(() => {
+    notification.style.transform = 'translateY(0)';
+  }, 10);
+
+  // Remove after 2 seconds
+  setTimeout(() => {
+    notification.style.transform = 'translateY(100px)';
+    notification.style.opacity = '0';
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 300);
+  }, 2000);
 }
