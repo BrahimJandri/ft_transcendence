@@ -221,16 +221,16 @@ function sendMessage(text) {
     if (!currentChat.name.startsWith('#')) {
         setTimeout(() => {
             const replies = [
-                "Haha, nice one! 😄",
-                "Sure thing!",
-                "That's awesome!",
-                "Let's do it!",
-                "Ready when you are!",
-                "Great idea!",
-                "I'm in!",
-                "Sounds good to me!",
-                "You're on! 🎮",
-                "Let's play!"
+                "Haha, Nadi Nadi 😄",
+                "Ah Ah, Frassi!",
+                "Mzyana!",
+                "SAfi Mchat!",
+                "Blan W9tma Bghiti Nta!",
+                "Kayna!",
+                "Ana M3ak!",
+                "Ohoya Oho!",
+                "Mchina! 🎮",
+                "Safi Sir 3nd Inak!"
             ];
             const randomReply = replies[Math.floor(Math.random() * replies.length)];
             const friendMessage = {
